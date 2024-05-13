@@ -16,7 +16,7 @@
   \******************/
 /***/ (() => {
 
-eval("\nconsole.log(\"hello world\");\n\n\n//# sourceURL=webpack://01---javascript-drum-kit/./index.ts?");
+eval("\nconst HandleKeyPress = (keyCode, isPlayed) => {\n    let tile = document.querySelector(`div[data-key=\"${keyCode}\"]`);\n    if (tile) {\n        if (isPlayed == true) {\n            tile.classList.add('playing');\n            PlaySound(keyCode);\n        }\n        else {\n            tile.classList.remove('playing');\n        }\n    }\n};\nconst PlaySound = (keyCode) => {\n    let sound = document.querySelector(`audio[data-key=\"${keyCode}\"]`);\n    if (sound) {\n        sound.currentTime = 0;\n        sound.play();\n    }\n};\ndocument.addEventListener('keydown', function (event) {\n    HandleKeyPress(event.keyCode, true);\n});\ndocument.addEventListener('keyup', function (event) {\n    HandleKeyPress(event.keyCode, false);\n});\n\n\n//# sourceURL=webpack://01---javascript-drum-kit/./index.ts?");
 
 /***/ })
 
