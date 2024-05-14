@@ -1,15 +1,20 @@
 
 const HandleKeyPress = (keyCode: number, isPlayed: boolean): void => {
+
     let tile: HTMLDivElement | null = document.querySelector(`div[data-key="${keyCode}"]`)
+    let hasBeenPlayed: boolean = isPlayedStatus[keyCode]
     if (tile){
-        if (isPlayed == true){
+        if (isPlayed == true && hasBeenPlayed == false){
             tile.classList.add('playing')
             PlaySound(keyCode)
+            isPlayedStatus[keyCode] = true
         }
-        else{
+        if (isPlayed == false){
             tile.classList.remove('playing')
+            isPlayedStatus[keyCode] = false
         }
     }    
+
     
 }
 
@@ -28,3 +33,19 @@ document.addEventListener('keydown',function(event:KeyboardEvent){
 document.addEventListener('keyup',function(event:KeyboardEvent){
     HandleKeyPress(event.keyCode,false)
 });
+
+interface NumberBooleanDictionary {
+    [key: number]: boolean;
+}
+
+let isPlayedStatus: NumberBooleanDictionary = {
+    65: false,
+    83: false,
+    68: false,
+    70: false,
+    71: false,
+    72: false,
+    74: false,
+    75: false,
+    76: false,
+}
