@@ -1,7 +1,7 @@
 var isPlayedStatus: StringBooleanDictionary = {}
 
 document.addEventListener('DOMContentLoaded', function() {
-    GetPlayableKeys() 
+    InitialiseKeyPlayingStatus() 
 })
 
 document.addEventListener('keydown',function(event:KeyboardEvent){
@@ -12,22 +12,20 @@ document.addEventListener('keyup',function(event:KeyboardEvent){
     HandleKeyUp(`${event.keyCode}`)
 });
 
-const GetPlayableKeys = (): void => {
-    const keysDiv = document.querySelector('.keys')
-    const playableKeysDivs = keysDiv?.querySelectorAll(':scope > div')
-    
-    if (playableKeysDivs){
-        const playableKeysDivsArray = Array.from(playableKeysDivs)
-        const dataKeys = playableKeysDivsArray.map(div => div.getAttribute('data-key'));
-        console.log(dataKeys)
-        dataKeys.forEach(key =>{
-            if (key){
-                isPlayedStatus[key] = false
-            }
-        })
+const InitialiseKeyPlayingStatus = (): void => {
+    const playableKeysDivs = GetPlayableDivs();
+    CreateHashTable(playableKeysDivs);
+  }
+  
+const GetPlayableDivs = (): NodeList | null => {
+    const keysDiv = document.querySelector('.keys');
+    let playableKeysDivs: NodeList | null = null
+    if (keysDiv) {
+        const playableKeysDivs = keysDiv.querySelectorAll(':scope > div');
     }
+    return playableKeysDivs
 }
-
+  
 const HandleKeyDown = (keyCode: string): void => {
     const [tile, audio] = FetchComponents(keyCode)
     HandlePlaying(tile, audio, keyCode)
@@ -66,6 +64,18 @@ const PlaySound = (audio: HTMLAudioElement): void => {
         audio.currentTime = 0
         audio.play()
 }
+
+const CreateHashTable = (playableKeysDivs: NodeList| null): void => {
+    if (playableKeysDivs) {
+        const playableKeysDivsArray = Array.from(playableKeysDivs) as HTMLDivElement[];
+        const dataKeys = playableKeysDivsArray.map(div => div.getAttribute('data-key'));
+        dataKeys.forEach(key => {
+            if (key) {
+                isPlayedStatus[key] = false;
+            }
+        });
+    }
+  }
 
 interface StringBooleanDictionary {
     [key: string]: boolean;
