@@ -1,28 +1,50 @@
+var isPlayedStatus: StringBooleanDictionary = {}
+
+document.addEventListener('DOMContentLoaded', function() {
+    GetPlayableKeys() 
+})
+
 document.addEventListener('keydown',function(event:KeyboardEvent){
-    HandleKeyDown(event.keyCode)
+    HandleKeyDown(`${event.keyCode}`)
 });
 
 document.addEventListener('keyup',function(event:KeyboardEvent){
-    HandleKeyUp(event.keyCode)
+    HandleKeyUp(`${event.keyCode}`)
 });
 
-const HandleKeyDown = (keyCode: number): void => {
+const GetPlayableKeys = (): void => {
+    const keysDiv = document.querySelector('.keys')
+    const playableKeysDivs = keysDiv?.querySelectorAll(':scope > div')
+    
+    if (playableKeysDivs){
+        const playableKeysDivsArray = Array.from(playableKeysDivs)
+        const dataKeys = playableKeysDivsArray.map(div => div.getAttribute('data-key'));
+        console.log(dataKeys)
+        dataKeys.forEach(key =>{
+            if (key){
+                isPlayedStatus[key] = false
+            }
+        })
+    }
+}
+
+const HandleKeyDown = (keyCode: string): void => {
     const [tile, audio] = FetchComponents(keyCode)
     HandlePlaying(tile, audio, keyCode)
 }
 
-const HandleKeyUp = (keyCode: number): void => {
+const HandleKeyUp = (keyCode: string): void => {
     const [tile, audio] = FetchComponents(keyCode)
     HandleMuted(tile, keyCode)
 }
 
-const FetchComponents = (keyCode: number): [HTMLDivElement | null, HTMLAudioElement | null] => {
+const FetchComponents = (keyCode: string): [HTMLDivElement | null, HTMLAudioElement | null] => {
     const tile: HTMLDivElement | null = document.querySelector(`div[data-key="${keyCode}"]`)
     const audio: HTMLAudioElement | null = document.querySelector(`audio[data-key="${keyCode}"]`)
  return [tile, audio]
 }
 
-const HandlePlaying = (tile: HTMLDivElement | null, audio: HTMLAudioElement | null, keyCode: number): void => {
+const HandlePlaying = (tile: HTMLDivElement | null, audio: HTMLAudioElement | null, keyCode: string): void => {
     if (tile && audio){
         let hasBeenPlayed: boolean = isPlayedStatus[keyCode]
         if (!hasBeenPlayed){
@@ -33,7 +55,7 @@ const HandlePlaying = (tile: HTMLDivElement | null, audio: HTMLAudioElement | nu
     }
 }
 
-const HandleMuted = (tile: HTMLDivElement | null, keyCode: number): void => {
+const HandleMuted = (tile: HTMLDivElement | null, keyCode: string): void => {
     if (tile){
         isPlayedStatus[keyCode] = false
         tile.classList.remove('playing')
@@ -45,18 +67,7 @@ const PlaySound = (audio: HTMLAudioElement): void => {
         audio.play()
 }
 
-interface NumberBooleanDictionary {
-    [key: number]: boolean;
+interface StringBooleanDictionary {
+    [key: string]: boolean;
 }
 
-let isPlayedStatus: NumberBooleanDictionary = {
-    65: false,
-    83: false,
-    68: false,
-    70: false,
-    71: false,
-    72: false,
-    74: false,
-    75: false,
-    76: false,
-}
